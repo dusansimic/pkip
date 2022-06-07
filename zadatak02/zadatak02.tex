@@ -1,0 +1,530 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[serbian]{babel}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{indentfirst}
+
+% \usepackage{xpatch}
+% \makeatletter
+% \xpatchcmd{\@thm}{\thm@headpunct{.}}{\thm@headpunct{}}{}{}
+% \makeatother
+
+\newtheoremstyle{masulthm}%
+{\topsep}%
+{\topsep}%
+{\itshape}%
+{}%
+{\bfseries}%
+{}%
+{.5em}%
+{\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}%
+
+\newtheoremstyle{masuldef}%
+{\topsep}%
+{\topsep}%
+{\itshape}%
+{}%
+{\bfseries}%
+{}%
+{.5em}%
+{\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}%
+
+\newtheoremstyle{masulexmp}%
+{\topsep}%
+{\topsep}%
+{}%
+{}%
+{\bfseries}%
+{.}%
+{.5em}%
+{\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}%
+
+\makeatletter
+\def\th@plain{%
+  \thm@notefont{}% same as heading font
+  \itshape % body font
+}
+\def\th@definition{%
+  \thm@notefont{}% same as heading font
+  \normalfont % body font
+}
+\makeatother
+
+\theoremstyle{masulthm}
+\newtheorem{theorem}{Teorema}[section]
+\theoremstyle{masuldef}
+\newtheorem{definition}{Definicija}[section]
+\theoremstyle{masulexmp}
+\newtheorem*{exmp*}{Primer}
+
+\newcommand{\inv}[1]{\text{inv}(#1)}
+\newcommand{\R}{\mathbb{R}}
+
+\title{Kratak uvod u matrice i determinante}
+\author{Dragan Mašulović}
+\date{7. maj 2020.}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+Analiziranje rešenja sistema jednačina nas vodi do pojma determinante, čemo je posvećen početak
+poglavlja. Nakon toga uvodimo pojam matrice i pokazujemo da je najsločenija i najneintuitivnija
+operacija nad matricama, množenje matrica, zapravo posledica analize ponašanja linearnih transformacija.
+Rešavanje sistema linearnih jednačina pokazujemo koristeći nekoliko strategija, od kojih neke imaju
+samo teorijski značaj, i glavu zaključujemo demonstracijom tehnike za nalaženje inverzne matrice date matrice.
+    
+\end{abstract}
+
+\section{Rešavanje sistema jednačina}
+
+Rešavanje sistema linearnih jednačina predstavlja važnu
+temu u savremenoj matematici jer se mnogi fenomeni u nauci mogu modelovati
+sistemima linearnih jednačina. Tipičan primer predstavlja analiza
+električnih kola primenom Kirhofovih zakona \cite{boyd}.
+Drugi važan izvor motivacije za razmatranja u ovom poglavlju su linearne transformacije \cite{axler}.
+Recimo, Lorencova transformacija opisuje promenu parametara (položaja i vremena) materijalne tačke
+u jednom referentnom sistemu kada se ona posmatra iz drugog referentnog sistema. Ako pretpostavimo
+da se referentni sistem u kome se nalazi materijalna tačka kreće konstantnom brzinom $ v $, pravolinijski
+duž $ x $-ose referentnog sistema posmatrača, onda se veza izme\dj u koordinata
+$ (x, y, z, t) $ materijalne tačke
+u njenom referentnom sistemu i koordinata $ (x', y', z', t') $ u referentnom sistemu posmatrača
+može opisati na sledeći način:
+
+\begin{align*}
+    x' & = \gamma (x - vt) \\
+    y' & = y \\
+    z' & = z \\
+    t' & = \frac{\gamma}{c^2}(c^2 t - vx)
+\end{align*}
+
+\noindent
+gde je $ c $ brzina svetlosti i $ \gamma = \frac{1}{\sqrt{1 - \frac{v^2}{c^2}}} $. Primetimo da su
+$ c $, $ v $ i $ \gamma $
+konstante. Ovo je primer transformacije koordinata $ (x, y, z, t) \mapsto (x', y', z' t') $.
+Transformacija koordinata ne mora da preslikava neke koordinate na isti broj koordinata. U računarskoj
+grafici se sistematski koriste transformacije $ (x, y, z) \mapsto (x' , y') $ koje koordinate iz trodimenzionalnog
+prostora (koji nas okružuje) preslikavaju na dve dimenzije (ekrana računara). Na primer, kosa projekcija
+se može opisati sledećom transformacijom koordinata:
+\begin{align*}
+    x' & = x - \frac{\sqrt{2}}{8} z \\
+    y' & = y - \frac{\sqrt{2}}{8} z
+\end{align*}
+
+I Lorencove transformacije i kosa projekcija predstavljaju samo specijalan slučaj opšte linearne tranformacije $ (x_1, x_2, \dots, x_n) \mapsto (y_1, y_2, \dots, y_m) $:
+
+\begin{align*}
+    y_1 & = a_{11} x_1 + a_{12} x_2 + \dots + a_{1n} x_n \\
+    y_2 & = a_{21} x_1 + a_{22} x_2 + \dots + a_{2n} x_n \\
+    \vdots \\
+    y_m & = a_{m1} x_1 + a_{m2} x_2 + \dots + a_{mn} x_n
+\end{align*}
+
+\noindent
+gde su $ a_{ij} $ neki realni brojevi.
+
+\section{Definicija determinante}
+
+\begin{definition}
+
+Neka je $ n $ prirodan broj i neka su $ a_{ij} $ proizvoljni realni brojevi, $ 1 \leq i, j \leq n $.
+Determinanta reda $ n $ je algebarski izraz oblika
+\begin{align*}
+    D =
+    \begin{vmatrix}
+        a_{11} & a_{12} & \dots & a_{1n} \\
+        a_{21} & a_{22} & \dots & a_{2n} \\
+        \vdots & \vdots &       & \vdots \\
+        a_{n1} & a_{n2} & \dots & a_{nn}
+    \end{vmatrix}
+    = \sum_{f \in S_{n}} (-1)^{\inv{f}} a_{1f_1} a_{2f_2} \dots a_{nf_n}
+\end{align*}
+
+gde je $ S_n $ skup svih permutacija skupa $ {1, 2, \dots, n} $.
+Kraće pišemo i $ D = |a_{ij}|_{n \times n} $.
+
+\end{definition}
+
+\noindent
+Tri kratka komentara:
+
+\begin{itemize}
+    \item kao što smo i nagovestili, sumiranje se vrši po svim permutacijama skupa $ {1, 2, \dots, n} $;
+
+    \item zato je determinanta reda $ n $ algebarski izraz koji ima $ n! $ sabiraka;
+
+    \item ako je $ f $ parna permutacija onda je broj $ \inv{f} $ paran, pa je $ (-1)^{\inv{f}} = 1 $;
+ako je $ f $ neparna permutacija onda je broj $ \inv{f} $ neparan, pa je $ (-1)^{\inv{f}} = -1 $;
+tako smo zapisali činjenicu da se sabirci koji odgovaraju parnim permutacijama uzimaju sa znakom $ + $,
+dok se sabirci koji odgovaraju neparnim permutacijama uzimaju sa znakom $ - $.
+\end{itemize}
+
+
+
+\section{Osobine determinanti}
+
+\begin{theorem}[Vrsta/kolona koja se sastoji od nula]
+
+Ako se u determinanti $ D $ neka vrsta ili kolona sastoji isključivo od nula, onda je $ D = 0 $.
+
+\end{theorem}
+
+\noindent
+Dokaz.
+  Primetimo, prvo, da svaki sabirak u definiciji determinante sadrži tačno jedan element svake
+  vrste determinante, i tačno jedan element svake kolone determinante.
+  To je ključni sastojak u dokazu koji sledi.
+  Neka se u determinanti $ D $ vrsta $ i $ sastoji isključivo od nula:
+  $ a_{i1} = a_{i2} = \dots = a_{in} = 0 $.
+  Tada je $ a_{if_i} = 0 $ za svako $ f \in S_n $ što znači da je svaki sabirak u izrazu%
+\begin{equation*}
+    \sum_{f \in S_n} (-1)^{\inv{f}} a_{1f_1} \dots a_{if_i} \dots a_{nf_n}
+\end{equation*}
+
+\noindent
+jednak nuli. Dakle, $ D = 0 $.
+
+Osim ove osobine, determinante imaju još niz važnih osobina koje koristimo da bismo
+efektivno odrediti vrednost determinante. Sada samo navodimo osobine i tek po koji dokaz, dok ostale, često veoma komplikovane
+dokaze dajemo u sledećem odeljku za posebno motivisane čitaoce.
+
+\begin{theorem}[Vrste postaju kolone i obrnuto]
+
+Determinanta ne menja vrednost ukoliko njene vrste postanu kolone tako da prva vrsta postane
+prva kolona, druga vrsta postane druga kolona, \dots, poslednja vrsta postane poslednja kolona. Preciznije,
+
+\newcommand{\D}{\vphantom{\vdots}}
+\begin{align*}
+    \begin{vmatrix}
+        a_{11} & a_{12} & \dots & a_{1n} \D \\
+        a_{21} & a_{22} & \dots & a_{2n} \D \\
+        \dots  & \dots  &       & \dots  \D \\
+        a_{n1} & a_{n2} & \dots & a_{nn} \D \\
+    \end{vmatrix}
+    =
+    \begin{vmatrix}
+        a_{11} & a_{21} & \vdots & a_{n1} \\
+        a_{12} & a_{22} & \vdots & a_{n2} \\
+        \vdots & \vdots &        & \vdots \\
+        a_{1n} & a_{2n} & \vdots & a_{nn} \\
+    \end{vmatrix}
+\end{align*}
+
+\end{theorem}
+
+Prethodna osobina determinanti je važna zato što pokazuje da ako neka osobina determinanti važi za vrste
+determinante, važi i za kolone determinante. Ovaj neformalni princip ćemo ilustrovati na brojnim primerima koji slede.
+
+\begin{theorem}[Zamena mesta dvema vrstama/kolonama determinante]
+Neka je $ D' $ determinanta koja se dobija od determinante $ D $ tako što dve vrste (ili dve kolone)
+zamene mesta. Tada je $ D' = -D $.
+\end{theorem}
+
+\begin{theorem}[Dve jednake vrste/kolone]
+Ako su u determinanti $ D $ neke dve vrste jednake, ili neke dve kolone jednake, onda je $ D = 0 $.
+\end{theorem}
+
+
+
+\section{Kramerova teorema}
+
+Kramerova teorema predstavlja važan teorijski rezultat koji nam opisuje strukturu rešenja
+kvadratnih sistema linearnih jednačina. Ova teorema nije pogodna za efikasno rešavanje sistema
+linearnih jednačina i zato je njen značaj isključivo teorijski.
+Posmatrajmo sledeći sistem $ n $ linearnih jednačina sa $ n $ nepoznatih:
+
+\begin{align*}
+    a_{11} x_1 + a_{12} x_2 + \dots + a_{1n} x_n & = b_1  \\
+    a_{21} x_1 + a_{22} x_2 + \dots + a_{2n} x_n & = b_2  \\
+    & \mathrel{
+        \settowidth{\dimen0}{$=$}
+        \hbox to \dimen0{\hss$\vdots$\hss}
+    } \\
+    a_{n1} x_1 + a_{n2} x_2 + \dots + a_{nn} x_n & = b_n.  \\
+\end{align*}
+
+\noindent
+Neka je $ D = |a_{ij}|_{n \times n} $ determinanta sistema i neka je, za svako $ i \in \{1, \dots, n\}$,
+sa $ D_x $ označena determinanta koja se dobija tako što se $ i $-ta kolona
+determinante $ D $ zameni kolonom koju čine slobodni članovi:
+
+\begin{equation*}
+    D_{x_1} =
+    \begin{vmatrix}
+        a_{11} & \dots & a_{1,i-1} & b_1 & a_{1,i+1} & \dots & a_{1n} \\
+        a_{21} & \dots & a_{2,i-1} & b_2 & a_{2,i+1} & \dots & a_{2n} \\
+        \vdots &       & \vdots    & \vdots & \vdots &       & \vdots \\
+        a_{n1} & \dots & a_{n,i-1} & b_n & a_{n,i+1} & \dots & a_{nn} \\
+    \end{vmatrix}
+\end{equation*}
+
+\begin{theorem}[Kramerova teorema]
+
+Ako za kvadratni sistem reda $ n $ znamo da je $ D \ne 0 $,
+tada je sistem odre\dj en i njegovo jedinstveno rešenje je dato sa:
+
+\begin{equation*}
+    x_1 = \frac{D_{x_1}}{D},
+    x_2 = \frac{D_{x_2}}{D},
+    \dots,
+    x_n = \frac{D_{x_n}}{D}
+\end{equation*}
+
+\end{theorem}
+
+\noindent
+Dokaz.
+  Neka je $ D_{(pq)} $ determinanta reda $ n - 1 $ koja se dobija izbacivanjem
+  $ p $-te vrste i $ q $-te kolone determinante $ D $.
+  Kada prvu jednačinu sistema pomnožimo sa $ D_{(11)} $, drugu pomnožimo sa
+  $ -D_{(21)} $, treću sa $ D_{(31)} $, \dots, $ i $-tu sa
+  $ (-1)^{i+1} D_{(i1)} $, i sve to saberemo, dobijamo:
+  
+  \begin{align*}
+      & (\underbrace{a_{11} D_{(11)} - a_{21} D_{(21)} + \ldots + (-1)^{n+1} a_{n1} D_{(n1)}}_D) x_1 + \\
+      & (\underbrace{a_{12} D_{(11)} - a_{22} D_{(21)} + \ldots + (-1)^{n+1} a_{n2} D_{(n1)}}_0) x_2 + \ldots + \\
+      & (\underbrace{a_{1n} D_{(11)} - a_{2n} D_{(21)} + \ldots + (-1)^{n+1} a_{nn} D_{(n1)}}_0) x_n = \\
+      & = \underbrace{b_1 D_{(11)} - b_2 D_{(21)} + \ldots + (-1)^{n+1} b_n D_{(n1)}}_{D_{x_1}} .
+  \end{align*}
+  
+  \noindent
+  Izraz koji moži promenljivu $ x_1 $ predstavlja razvoj determinante $ D $
+  po elementima njene prve kolone, dok izrazi koji množe promenljive $ x_2 $, \dots, $ x_n $ predstavljaju razvoj determinante $ D $ po elementima ``pogrešne'' kolone.
+  S druge strane, slobodni član predstavlja razvoj determinante $ D_{x_1} $ po elementima njene prve kolone.
+  Koristeći teoremu o razvoju determinante po elementima prve kolone, i koristeći činjenicu da je
+  razvoj determinante po elementima ``pogrešne kolone'' jednak 0, prethodna jednačina se može
+  zapisati ovako:
+  
+  \begin{equation*}
+      D \cdot x_1 = D_{x_1}.
+  \end{equation*}
+  
+  \noindent
+  Kako je $ D \ne 0 $ dobijamo $ x = \frac{D_{x_1}}{D} $. Na isti način se dobija da je
+  $ X_i = \frac{D_{x_i}}{D} $ za sve $ i \in \{2, \dots, n\} $.
+
+
+\section{Pojam matrice, operacije sa matricama}
+
+Matrica je pravougaona šema brojeva čije dimenzije zovemo
+format matrice \cite{klein}. Na primer:
+
+\begin{tabular}{ccccc}
+    Matrica: &
+    
+    $
+    \left[\begin{array}{cccc}
+    5 & 3 & 9 & 9 \\
+    2 & 0 & 4 & 1 \\
+    0 & 0 & 0 & 5 \\
+    \end{array}\right]
+    $ &
+    
+    $
+    \left[\begin{array}{cccc}
+    5 \\ 2 \\ 0 \\ 6
+    \end{array}\right]
+    $ &
+    
+    $
+    \left[\begin{array}{cccc}
+    5 & 3 & 34 & 9
+    \end{array}\right]
+    $ &
+    
+    $
+    \left[\begin{array}{cccc}
+    3 & 9 & 9 \\
+    0 & 4 & 1 \\
+    0 & 0 & 5
+    \end{array}\right]
+    $ \\
+
+    Format: &
+    $ 3 \times 4 $ &
+    $ 4 \times 1 $ &
+    $ 1 \times 4 $ &
+    $ 3 \times 3 $
+\end{tabular}
+
+Matrica formata $ k \times k $ zove se $ kvadratna matrica $.
+Matrica formata $ 1 \times k $ zove se $ vektor-vrsta $,
+a matrica formata $ k \times 1 $ $ vektor-kolona $. Zapis
+$ A = [a_{ij}]_{n \times m} $ znači da je $ A $ matrica formata
+$ n \times m $ čiji elementi su označeni sa $ a_{ij} $. Pri
+tome je $ i \in \{1, \dots, n\} $, a $ j \in \{1, \dots, m\} $.
+
+Skup svih matrica formata $ m \times n $ sa elementima iz $ \R $
+označavamo sa $ \R^{m \times n} $. Matrice istog formata se sabiraju tako što se saberu elementi na odgovarajućim mestima:
+
+\begin{center}
+    \begin{tabular}{c}
+        \begin{equation*}
+            \begin{bmatrix}
+                a_{11} & a_{12} & \dots & a_{1n} \\
+                a_{21} & a_{22} & \dots & a_{2n} \\
+                \vdots & \vdots &       & \vdots \\
+                a_{m1} & a_{m2} & \dots & a_{mn}
+            \end{bmatrix}
+            +
+            \begin{bmatrix}
+                b_{11} & b_{12} & \dots & b_{1n} \\
+                b_{21} & b_{22} & \dots & b_{2n} \\
+                \vdots & \vdots &       & \vdots \\
+                b_{m1} & b_{m2} & \dots & b_{mn}
+            \end{bmatrix}
+            =    
+        \end{equation*} \\
+        \begin{equation*}
+						$
+            = \begin{bmatrix}
+                a_{11} + b_{11} & a_{12} + b_{12} & \dots & a_{1n} + b_{1n} \\
+                a_{21} + b_{21} & a_{22} + b_{22} & \dots & a_{2n} + b_{2n} \\
+                \vdots & \vdots &       & \vdots \\
+                a_{m1} + b_{m1} & a_{m2} + b_{m2} & \dots & a_{mn} + b_{mn}
+            \end{bmatrix}
+						$
+        \end{equation*}.
+    \end{tabular}
+\end{center}
+
+\noindent
+Kraće pišemo još i ovako:
+
+\begin{equation*}
+    [a_{ij}]_{m \times n} + [b_{ij}]_{m \times n} = [a_{ij} + b_{ij}]_{m \times n}.
+\end{equation*}
+
+\noindent
+Matrica se množi brojem tako što se svaki element matrice pomnoži tim brojem:
+
+\begin{equation*}
+    \alpha
+    \begin{bmatrix}
+        a_{11} & a_{12} & \dots & a_{1n} \\
+        a_{21} & a_{22} & \dots & a_{2n} \\
+        \vdots & \vdots &       & \vdots \\
+        a_{m1} & a_{m2} & \dots & a_{mn}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        \alpha a_{11} & \alpha a_{12} & \dots & \alpha a_{1n} \\
+        \alpha a_{21} & \alpha a_{22} & \dots & \alpha a_{2n} \\
+        \vdots & \vdots &       & \vdots \\
+        \alpha a_{m1} & \alpha a_{m2} & \dots & \alpha a_{mn}
+    \end{bmatrix}.
+\end{equation*}
+
+\noindent
+Kraće pišemo još i ovako:
+
+\begin{equation*}
+    \alpha \cdot [a_{ij}]_{m \times n} = [\alpha \cdot a_{ij}]_{m \times n}.
+\end{equation*}
+
+Sada možemo da pre\dj emo na opštu definiciju proizvoda matrica. Prvo, podsetimo se da 
+matrice mogu da se pomnože samo ako je broj kolona prve matrice jednak broju vrsta druge.
+Za matrice $ A $ formata $ k \times l $ i $ B $ formata $ m \times n $ kažemo
+da su \emph{kompatibilne} ako je $ l = n $. \emph{Proizvod} kompatibilnih
+matrica $ A = [a_{ij}]_{k \times n} $ i $ B = [b_{ij}]_{n \times m} $, pišemo $ C = AB $, je
+matrica $ C = [c_{ij}]_{k \times m} $ čiji elementi se računaju na
+sledeći način:
+
+\begin{equation*}
+    c_{ij} = \sum_{s = 1}^n a_{is} b_{sj}.
+\end{equation*}
+
+\begin{theorem}
+    Moženje matrica je asocijativno. Preciznije, ako je $ A $ matrica formata $ m \times n $,
+    $ B $ matrica formata $ n \times p $ i $ C $ matrica formata
+    $ p \times q $, onda je $ (AB)C = A(BC) $.
+\end{theorem}
+
+Dokaz tvr\dj enja nećemo dati u ovom kursu iako je ideja dokaza u osnovi jednostavna: množenje matrica
+odgovara kompoziciji specijalnih preslikavanja koje smo zvali linearne transformacije, pa kako je
+kompozicija funkcija asocijativna operacija, to ne čudi da je i množenje matrica asocijativna operacija.
+
+\begin{exmp*}
+    Množenje matrica u opštem slučaju nije komutativno. Na primer,
+    $
+    \begin{bmatrix}
+        1 & 2 \\
+        3 & 4
+    \end{bmatrix}
+    \cdot
+    \begin{bmatrix}
+        1 & 0 \\
+        0 & 0
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        1 & 0 \\
+        3 & 0
+    \end{bmatrix}
+    $, dok je
+    $
+    \begin{bmatrix}
+        1 & 0 \\
+        0 & 0
+    \end{bmatrix}
+    \cdot
+    \begin{bmatrix}
+        1 & 2 \\
+        3 & 4
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        1 & 2 \\
+        0 & 0
+    \end{bmatrix}
+    $.
+    
+    Postoji matrica koja prilikom množenja matrica ima istu ulogu koju broj 1 ima prilikom množenja brojeva.
+    Sa $ E_n $ označavamo sledeću kvadratnu matricu reda $ n $:
+    
+    \begin{equation*}
+        E_n =
+        \begin{bmatrix}
+            1 & 0 & 0 & \dots & 0 \\
+            0 & 1 & 0 & \dots & 0 \\
+            0 & 0 & 1 & \dots & 0 \\
+            \vdots & \vdots & \vdots & & \vdots \\
+            0 & 0 & 0 & \dots & 1
+        \end{bmatrix},
+    \end{equation*}
+    
+    i zovemo je \emph{jedinična matrica reda} $ n $.
+    Ukoliko je red matrice $ E_n $ jasan iz konteksta, umesto $ E_n $ pišemo samo $ E $.
+\end{exmp*}
+
+\begin{theorem}
+  Za proizvoljnu matricu $ A $ formata $ m \times n $ je $ AE_n = E_mA = A $.
+\end{theorem}
+
+Svakoj kvadratnoj matrici $ A = [a_{ij}]_{n \times n} $ se prirodno dodeljuje determinanta
+$ D = [a_{ij}]_{n \times n} $ reda $ n $. Kažemo da je $ D $ determinanta matrice $ A $.
+
+Naredna teorema pokazuje da se determinanta ``slaže'' sa množenjem kvadratnih matrica istog reda
+u sledećem smislu: $ |AB| = |A| \cdot |B| $.
+
+\begin{theorem}
+  Neka su $ A $ i $ B $ kvadratne matrice istog reda. Tada je $ |AB| = |A| \cdot |B| $.
+\end{theorem}
+
+\begin{thebibliography}{9}
+\bibitem{axler}
+Sheldon Axler: ``Linear Algebra Done Right'' (2nd Ed.), Springer-Verlag New York Berlin Heidelberg 1997.
+
+\bibitem{boyd}
+Stephen Boyd, Lieven Vandenberghe: ``Introduction to Applied Linear Algebra: Vectors, Matrices, and Least Square'',
+Cambridge University Press 2018.
+
+\bibitem{klein}
+Philip N. Klein: ``Coding the Matrix -- Linear Algebra through Applications to Computer Science''.
+Newtonian Press 2015.
+
+\end{thebibliography}
+
+\end{document}

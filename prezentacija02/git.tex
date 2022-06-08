@@ -14,36 +14,6 @@
 
 \usefonttheme[onlymath]{serif}
 
-\newcommand{\graphframe}[1]{\begin{frame}{#1}
-	\begin{center}
-		\begin{tikzpicture}[node distance={40pt}]
-			\tikzstyle{c}=[circle]
-			\tikzstyle{t}=[rectangle, fill=black!20]
-			\tikzstyle{b1}=[fill=blue!20]
-			\tikzstyle{b2}=[fill=red!20]
-			\tikzstyle{b3}=[fill=green!20]
-
-			\node[b1,c] (c1) {$c_1$};
-			\node[b1,c] (c2) [right of=c1] {$c_2$};
-			\node[b1,c] (c3) [right of=c2] {$c_3$};
-			\node[b1,c] (c4) [right of=c3] {$c_4$};
-			\node[b1,c] (c5) [right of=c4] {$m_5$};
-			\node[b1,c] (c6) [right of=c5] {$c_6$};
-			\node[b2,c] (c7) [below of=c3] {$c_7$};
-			\node[b2,c] (c8) [right of=c7] {$c_8$};
-			\node[b3,c] (c9) [below of=c5] {$c_9$};
-			\node[b3,c] (c10) [right of=c9] {$c_{10}$};
-			\node[t] (head) [above right of=c6] {HEAD};
-			\node[t] (main) [above left of=c6] {main};
-			\node[t] (first) [below of=c8] {first};
-			\node[t] (second) [below right of=c10] {second};
-
-			\foreach \from/\to in {c6/c5,c5/c4,c4/c3,c3/c2,c2/c1,c8/c7,c7/c2,c5/c8,c9/c8,c10/c9,head/c6,main/c6,first/c8,second/c10}
-			\draw [->] (\from) -- (\to);
-		\end{tikzpicture}
-	\end{center}
-\end{frame}}
-
 \usetheme{Warsaw}
 
 \title{Sistem za kontrolu verzija - Git}
@@ -53,7 +23,7 @@
 	Prirodno-matemati\v cki fakultet, Novi Sad \\
 	Srbija
 }
-\date{\today}
+\date{7. jun 2022.}
 
 \begin{document}
 
@@ -92,30 +62,30 @@
 \begin{frame}{Git}
 	\begin{columns}
 		\column{0.5\textwidth}
-			\begin{center}
-				\includegraphics[scale=0.1]{torvalds.jpg}\\
-				Linus Torvalds
-			\end{center}
+		\begin{center}
+			\includegraphics[scale=0.1]{torvalds.jpg}\\
+			Linus Torvalds
+		\end{center}
 		\column{0.5\textwidth}
-			\begin{center}
-				\includegraphics[scale=0.08]{hamano.jpg}\\
-				Junio Hamano
-			\end{center}
+		\begin{center}
+			\includegraphics[scale=0.08]{hamano.jpg}\\
+			Junio Hamano
+		\end{center}
 	\end{columns}
 \end{frame}
 
 \begin{frame}{Osnove git-a}
 	\begin{itemize}
 		\item Izmena/revizija (commit)
-		\pause
+		      \pause
 		\item Oznaka (tag)
-		\pause
+		      \pause
 		\item Glava (head)
-		\pause
+		      \pause
 		\item Grana (branch)
-		\pause
+		      \pause
 		\item Spajanje grana (merge commit)
-		\pause
+		      \pause
 		\item Tuma\v cenje razlika (diff)
 	\end{itemize}
 \end{frame}
@@ -162,11 +132,11 @@
 		He\v s (eng. hash) funkcija je bilo koja funkcija koja slu\v zi za mapiranje podataka
 		proizvoljne veli\v cine na vrednosti fiksne veli\v cine.
 		\begin{align*}
-			& f \colon \textbf{d} \mapsto \textbf{h}, \textbf{d} \in [0, 255]_n \text{ gde je $ n $ prizvoljan broj}, \\
-			& \textbf{h} \in [0, 255]_m \text{ gde je $ m $ konstanta }
+			 & f \colon \textbf{d} \mapsto \textbf{h}, \textbf{d} \in [0, 255]_n \text{ gde je $ n $ prizvoljan broj}, \\
+			 & \textbf{h} \in [0, 255]_m \text{ gde je $ m $ konstanta }
 		\end{align*}
 	\end{block}
-	
+
 	\begin{exampleblock}{SHA-1}
 		Algoritam za he\v sovanje razvijen od strane Nacionalne sigurnosne agencije u Sjedinjenim
 		Ameri\v ckim Dr\v zavama. Du\v zina izlaznog stringa je 160 bita ili 20 bajta ($ m = 20 $).
@@ -194,7 +164,7 @@
 			\end{tikzpicture}
 		\end{center}
 	\end{block}
-	
+
 	\begin{exampleblock}{Primena}
 		Verzije softvera, specijalne revizije\dots
 	\end{exampleblock}
@@ -227,20 +197,23 @@
 	\begin{block}{Grana (branch)}
 		Poslednja izmena u lancu bi trebala da ima posebnu vrstu oznake koja predstavlja naziv grane.
 		Ukoliko nema oznake za granu, nije prakti\v cno pristupati toj grani.
-		
+
 		\begin{center}
 			\begin{tikzpicture}[node distance={40pt}]
 				\tikzstyle{c}=[circle]
 				\tikzstyle{t}=[rectangle, fill=black!20]
 				\tikzstyle{b1}=[fill=blue!20]
+				\tikzstyle{b2}=[fill=red!20]
 
 				\node[b1,c] (c1) {$c_1$};
 				\node[b1,c] (c2) [right of=c1] {$c_2$};
 				\node[b1,c] (c3) [right of=c2] {$c_3$};
-				\node[t] (prev) [above right of=c2] {prev};
-				\node[t] (main) [above right of=c3] {main};
+				\node[b2,c] (c4) [above right of=c2] {$c_4$};
+				\node[b2,c] (c5) [right of=c4] {$c_5$};
+				\node[t] (feature) [right of=c5] {feature};
+				\node[t] (main) [right of=c3] {main};
 
-				\foreach \from/\to in {c3/c2,c2/c1,prev/c2,main/c3}
+				\foreach \from/\to in {c3/c2,c2/c1,c5/c4,c4/c2,feature/c5,main/c3}
 				\draw [->] (\from) -- (\to);
 			\end{tikzpicture}
 		\end{center}
@@ -254,31 +227,62 @@
 	\end{exampleblock}
 \end{frame}
 
+\begin{frame}{Grana (branch)}
+	\begin{exampleblock}{Okle dokle ide grana}
+		Postojanje grane je uvek relativno i zavisi od na\v cina na koji se gleda stablo.
+
+		\begin{center}
+			\begin{tikzpicture}[node distance={40pt}]
+				\tikzstyle{c}=[circle]
+				\tikzstyle{t}=[rectangle, fill=black!20]
+				\tikzstyle{b1}=[fill=blue!20]
+				\tikzstyle{b2}=[fill=red!20]
+				\tikzstyle{b3}=[fill=green!20]
+
+				\node[b1,c] (c1) {$c_1$};
+				\node[b1,c] (c2) [right of=c1] {$c_2$};
+				\node[b1,c] (c3) [right of=c2] {$c_3$};
+				\node[b1,c] (c4) [right of=c3] {$c_4$};
+				\node[b2,c] (c5) [below right of=c2] {$c_5$};
+				\node[b2,c] (c6) [right of=c5] {$c_6$};
+				\node[b3,c] (c7) [right of=c6] {$c_7$};
+				\node[b3,c] (c8) [right of=c7] {$c_8$};
+				\node[t] (feature1) [below right of=c6] {$\text{feature}_1$};
+				\node[t] (feature2) [below right of=c8] {$\text{feature}_2$};
+				\node[t] (main) [right of=c4] {main};
+
+				\foreach \from/\to in {c8/c7,c7/c6,c6/c5,c5/c2,c4/c3,c3/c2,c2/c1,feature1/c6,feature2/c8,main/c4}
+				\draw [->] (\from) -- (\to);
+			\end{tikzpicture}
+		\end{center}
+	\end{exampleblock}
+\end{frame}
+
 \begin{frame}{Spajanje grana (merging)}
 	\begin{columns}
 		\column{0.5\textwidth}
-			\begin{block}{Izmena spajanja (merge commit)}
-				Izmena spajanja je ona koja ima dve izmene kao prethodnike.
-			\end{block}
-		
+		\begin{block}{Izmena spajanja (merge commit)}
+			Izmena spajanja je ona koja ima dve izmene kao prethodnike.
+		\end{block}
+
 		\column{0.5\textwidth}
-			\begin{center}
-				\begin{tikzpicture}
-					\tikzstyle{c}=[circle]
-					\tikzstyle{b1}=[fill=blue!20]
-					\tikzstyle{b2}=[fill=red!20]
-					\tikzstyle{b3}=[fill=green!20]
+		\begin{center}
+			\begin{tikzpicture}
+				\tikzstyle{c}=[circle]
+				\tikzstyle{b1}=[fill=blue!20]
+				\tikzstyle{b2}=[fill=red!20]
+				\tikzstyle{b3}=[fill=green!20]
 
-					\node[b1,c] (c1) at (0, 0) {$c_1$};
-					\node[b1,c] (c2) at (0, 2) {$c_2$};
-					\node[b2,c] (c3) at (2, 0) {$c_3$};
-					\node[b2,c] (c4) at (2, 2) {$c_4$};
-					\node[b3,c] (m5) at (1, 4) {$m_5$};
+				\node[b1,c] (c1) at (0, 0) {$c_1$};
+				\node[b1,c] (c2) at (0, 2) {$c_2$};
+				\node[b2,c] (c3) at (2, 0) {$c_3$};
+				\node[b2,c] (c4) at (2, 2) {$c_4$};
+				\node[b3,c] (m5) at (1, 4) {$m_5$};
 
-					\foreach \from/\to in {m5/c4,m5/c2,c4/c3,c2/c1}
-					\draw [->] (\from) -- (\to);
-				\end{tikzpicture}
-			\end{center}
+				\foreach \from/\to in {m5/c4,m5/c2,c4/c3,c2/c1}
+				\draw [->] (\from) -- (\to);
+			\end{tikzpicture}
+		\end{center}
 	\end{columns}
 \end{frame}
 
@@ -313,7 +317,7 @@
 \end{frame}
 
 \begin{frame}[fragile]{Tuma\v cenje razlika (diff)}
-\begin{lstlisting}[language=diff, basicstyle=\tiny]
+	\begin{lstlisting}[language=diff, basicstyle=\tiny]
 diff --git a/org.gtk.Gtk3theme.adw-gtk3.yaml b/org.gtk.Gtk3theme.adw-gtk3.yaml
 index 45d2aaa..46dfb74 100644
 --- a/org.gtk.Gtk3theme.adw-gtk3.yaml
@@ -330,6 +334,12 @@ index 45d2aaa..46dfb74 100644
    - name: appdata
      buildsystem: simple
 \end{lstlisting}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge Zaklju\v cak
+	\end{center}
 \end{frame}
 
 \begin{frame}

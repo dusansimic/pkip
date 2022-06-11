@@ -4,14 +4,10 @@
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{indentfirst}
 
-% \usepackage{xpatch}
-% \makeatletter
-% \xpatchcmd{\@thm}{\thm@headpunct{.}}{\thm@headpunct{}}{}{}
-% \makeatother
-
+% Custom theorem styles to match the ones from professor
 \newtheoremstyle{masulthm}%
-{\topsep}%
-{\topsep}%
+{\parsep}%
+{\parsep}%
 {\itshape}%
 {}%
 {\bfseries}%
@@ -20,8 +16,8 @@
 {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}%
 
 \newtheoremstyle{masuldef}%
-{\topsep}%
-{\topsep}%
+{\parsep}%
+{\parsep}%
 {\itshape}%
 {}%
 {\bfseries}%
@@ -30,8 +26,8 @@
 {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}%
 
 \newtheoremstyle{masulexmp}%
-{\topsep}%
-{\topsep}%
+{\parsep}%
+{\parsep}%
 {}%
 {}%
 {\bfseries}%
@@ -39,16 +35,8 @@
 {.5em}%
 {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}%
 
-\makeatletter
-\def\th@plain{%
-  \thm@notefont{}% same as heading font
-  \itshape % body font
-}
-\def\th@definition{%
-  \thm@notefont{}% same as heading font
-  \normalfont % body font
-}
-\makeatother
+\newtheoremstyle{masulproof}{\topsep}{\topsep}{}{}{}{.}{.5em}{\thmname{#1}}
+
 
 \theoremstyle{masulthm}
 \newtheorem{theorem}{Teorema}[section]
@@ -56,6 +44,8 @@
 \newtheorem{definition}{Definicija}[section]
 \theoremstyle{masulexmp}
 \newtheorem*{exmp*}{Primer}
+\theoremstyle{masulproof}
+\newtheorem*{masulproof}{Dokaz}
 
 \newcommand{\inv}[1]{\text{inv}(#1)}
 \newcommand{\R}{\mathbb{R}}
@@ -110,11 +100,11 @@ prostora (koji nas okružuje) preslikavaju na dve dimenzije (ekrana računara). 
 se može opisati sledećom transformacijom koordinata:
 \begin{align*}
     x' & = x - \frac{\sqrt{2}}{8} z \\
-    y' & = y - \frac{\sqrt{2}}{8} z
+    y' & = y - \frac{\sqrt{2}}{8} z.
 \end{align*}
 
+\noindent
 I Lorencove transformacije i kosa projekcija predstavljaju samo specijalan slučaj opšte linearne tranformacije $ (x_1, x_2, \dots, x_n) \mapsto (y_1, y_2, \dots, y_m) $:
-
 \begin{align*}
     y_1 & = a_{11} x_1 + a_{12} x_2 + \dots + a_{1n} x_n \\
     y_2 & = a_{21} x_1 + a_{22} x_2 + \dots + a_{2n} x_n \\
@@ -151,7 +141,7 @@ Kraće pišemo i $ D = |a_{ij}|_{n \times n} $.
 Tri kratka komentara:
 
 \begin{itemize}
-    \item kao što smo i nagovestili, sumiranje se vrši po svim permutacijama skupa $ {1, 2, \dots, n} $;
+    \item kao što smo i nagovestili, sumiranje se vrši po svim permutacijama skupa $ \{1, 2, \dots, n\} $;
 
     \item zato je determinanta reda $ n $ algebarski izraz koji ima $ n! $ sabiraka;
 
@@ -166,25 +156,22 @@ dok se sabirci koji odgovaraju neparnim permutacijama uzimaju sa znakom $ - $.
 \section{Osobine determinanti}
 
 \begin{theorem}[Vrsta/kolona koja se sastoji od nula]
-
 Ako se u determinanti $ D $ neka vrsta ili kolona sastoji isključivo od nula, onda je $ D = 0 $.
-
 \end{theorem}
 
 \noindent
-Dokaz.
-  Primetimo, prvo, da svaki sabirak u definiciji determinante sadrži tačno jedan element svake
-  vrste determinante, i tačno jedan element svake kolone determinante.
-  To je ključni sastojak u dokazu koji sledi.
-  Neka se u determinanti $ D $ vrsta $ i $ sastoji isključivo od nula:
-  $ a_{i1} = a_{i2} = \dots = a_{in} = 0 $.
-  Tada je $ a_{if_i} = 0 $ za svako $ f \in S_n $ što znači da je svaki sabirak u izrazu%
-\begin{equation*}
-    \sum_{f \in S_n} (-1)^{\inv{f}} a_{1f_1} \dots a_{if_i} \dots a_{nf_n}
-\end{equation*}
-
-\noindent
-jednak nuli. Dakle, $ D = 0 $.
+\begin{masulproof}
+    Primetimo, prvo, da svaki sabirak u definiciji determinante sadrži tačno jedan element svake
+    vrste determinante, i tačno jedan element svake kolone determinante.
+    To je ključni sastojak u dokazu koji sledi.
+    Neka se u determinanti $ D $ vrsta $ i $ sastoji isključivo od nula:
+    $ a_{i1} = a_{i2} = \dots = a_{in} = 0 $.
+    Tada je $ a_{if_i} = 0 $ za svako $ f \in S_n $ što znači da je svaki sabirak u izrazu%
+    \begin{equation*}
+        \sum_{f \in S_n} (-1)^{\inv{f}} a_{1f_1} \dots a_{if_i} \dots a_{nf_n}
+    \end{equation*}
+    jednak nuli. Dakle, $ D = 0 $.
+\end{masulproof}
 
 Osim ove osobine, determinante imaju još niz važnih osobina koje koristimo da bismo
 efektivno odrediti vrednost determinante. Sada samo navodimo osobine i tek po koji dokaz, dok ostale, često veoma komplikovane
@@ -194,7 +181,6 @@ dokaze dajemo u sledećem odeljku za posebno motivisane čitaoce.
 
 Determinanta ne menja vrednost ukoliko njene vrste postanu kolone tako da prva vrsta postane
 prva kolona, druga vrsta postane druga kolona, \dots, poslednja vrsta postane poslednja kolona. Preciznije,
-
 \newcommand{\D}{\vphantom{\vdots}}
 \begin{align*}
     \begin{vmatrix}
@@ -209,7 +195,7 @@ prva kolona, druga vrsta postane druga kolona, \dots, poslednja vrsta postane po
         a_{12} & a_{22} & \vdots & a_{n2} \\
         \vdots & \vdots &        & \vdots \\
         a_{1n} & a_{2n} & \vdots & a_{nn} \\
-    \end{vmatrix}
+    \end{vmatrix}.
 \end{align*}
 
 \end{theorem}
@@ -217,7 +203,7 @@ prva kolona, druga vrsta postane druga kolona, \dots, poslednja vrsta postane po
 Prethodna osobina determinanti je važna zato što pokazuje da ako neka osobina determinanti važi za vrste
 determinante, važi i za kolone determinante. Ovaj neformalni princip ćemo ilustrovati na brojnim primerima koji slede.
 
-\begin{theorem}[Zamena mesta dvema vrstama/kolonama determinante]
+\begin{theorem}[\mbox{Zamena mesta dvema vrstama/kolonama determinante}]
 Neka je $ D' $ determinanta koja se dobija od determinante $ D $ tako što dve vrste (ili dve kolone)
 zamene mesta. Tada je $ D' = -D $.
 \end{theorem}
@@ -234,7 +220,6 @@ Kramerova teorema predstavlja važan teorijski rezultat koji nam opisuje struktu
 kvadratnih sistema linearnih jednačina. Ova teorema nije pogodna za efikasno rešavanje sistema
 linearnih jednačina i zato je njen značaj isključivo teorijski.
 Posmatrajmo sledeći sistem $ n $ linearnih jednačina sa $ n $ nepoznatih:
-
 \begin{align*}
     a_{11} x_1 + a_{12} x_2 + \dots + a_{1n} x_n & = b_1  \\
     a_{21} x_1 + a_{22} x_2 + \dots + a_{2n} x_n & = b_2  \\
@@ -242,7 +227,7 @@ Posmatrajmo sledeći sistem $ n $ linearnih jednačina sa $ n $ nepoznatih:
         \settowidth{\dimen0}{$=$}
         \hbox to \dimen0{\hss$\vdots$\hss}
     } \\
-    a_{n1} x_1 + a_{n2} x_2 + \dots + a_{nn} x_n & = b_n.  \\
+    a_{n1} x_1 + a_{n2} x_2 + \dots + a_{nn} x_n & = b_n.
 \end{align*}
 
 \noindent
@@ -261,27 +246,24 @@ determinante $ D $ zameni kolonom koju čine slobodni članovi:
 \end{equation*}
 
 \begin{theorem}[Kramerova teorema]
-
 Ako za kvadratni sistem reda $ n $ znamo da je $ D \ne 0 $,
 tada je sistem odre\dj en i njegovo jedinstveno rešenje je dato sa:
-
 \begin{equation*}
     x_1 = \frac{D_{x_1}}{D},
     x_2 = \frac{D_{x_2}}{D},
     \dots,
-    x_n = \frac{D_{x_n}}{D}
+    x_n = \frac{D_{x_n}}{D}.
 \end{equation*}
 
 \end{theorem}
 
 \noindent
-Dokaz.
+\begin{masulproof}
   Neka je $ D_{(pq)} $ determinanta reda $ n - 1 $ koja se dobija izbacivanjem
   $ p $-te vrste i $ q $-te kolone determinante $ D $.
   Kada prvu jednačinu sistema pomnožimo sa $ D_{(11)} $, drugu pomnožimo sa
   $ -D_{(21)} $, treću sa $ D_{(31)} $, \dots, $ i $-tu sa
   $ (-1)^{i+1} D_{(i1)} $, i sve to saberemo, dobijamo:
-  
   \begin{align*}
       & (\underbrace{a_{11} D_{(11)} - a_{21} D_{(21)} + \ldots + (-1)^{n+1} a_{n1} D_{(n1)}}_D) x_1 + \\
       & (\underbrace{a_{12} D_{(11)} - a_{22} D_{(21)} + \ldots + (-1)^{n+1} a_{n2} D_{(n1)}}_0) x_2 + \ldots + \\
@@ -296,7 +278,6 @@ Dokaz.
   Koristeći teoremu o razvoju determinante po elementima prve kolone, i koristeći činjenicu da je
   razvoj determinante po elementima ``pogrešne kolone'' jednak 0, prethodna jednačina se može
   zapisati ovako:
-  
   \begin{equation*}
       D \cdot x_1 = D_{x_1}.
   \end{equation*}
@@ -304,11 +285,11 @@ Dokaz.
   \noindent
   Kako je $ D \ne 0 $ dobijamo $ x = \frac{D_{x_1}}{D} $. Na isti način se dobija da je
   $ X_i = \frac{D_{x_i}}{D} $ za sve $ i \in \{2, \dots, n\} $.
-
+\end{masulproof}
 
 \section{Pojam matrice, operacije sa matricama}
 
-Matrica je pravougaona šema brojeva čije dimenzije zovemo
+\emph{Matrica} je pravougaona šema brojeva čije dimenzije zovemo
 format matrice \cite{klein}. Na primer:
 
 \begin{tabular}{ccccc}
@@ -349,9 +330,10 @@ format matrice \cite{klein}. Na primer:
     $ 3 \times 3 $
 \end{tabular}
 
-Matrica formata $ k \times k $ zove se $ kvadratna matrica $.
-Matrica formata $ 1 \times k $ zove se $ vektor-vrsta $,
-a matrica formata $ k \times 1 $ $ vektor-kolona $. Zapis
+\noindent
+Matrica formata $ k \times k $ zove se \emph{kvadratna matrica}.
+Matrica formata $ 1 \times k $ zove se \emph{vektor-vrsta},
+a matrica formata $ k \times 1 $ \emph{vektor-kolona}. Zapis
 $ A = [a_{ij}]_{n \times m} $ znači da je $ A $ matrica formata
 $ n \times m $ čiji elementi su označeni sa $ a_{ij} $. Pri
 tome je $ i \in \{1, \dots, n\} $, a $ j \in \{1, \dots, m\} $.
@@ -361,8 +343,7 @@ označavamo sa $ \R^{m \times n} $. Matrice istog formata se sabiraju tako što 
 
 \begin{center}
     \begin{tabular}{c}
-        \begin{equation*}
-            \begin{bmatrix}
+            $\begin{bmatrix}
                 a_{11} & a_{12} & \dots & a_{1n} \\
                 a_{21} & a_{22} & \dots & a_{2n} \\
                 \vdots & \vdots &       & \vdots \\
@@ -375,18 +356,13 @@ označavamo sa $ \R^{m \times n} $. Matrice istog formata se sabiraju tako što 
                 \vdots & \vdots &       & \vdots \\
                 b_{m1} & b_{m2} & \dots & b_{mn}
             \end{bmatrix}
-            =    
-        \end{equation*} \\
-        \begin{equation*}
-						$
-            = \begin{bmatrix}
+            = $\\
+            $= \begin{bmatrix}
                 a_{11} + b_{11} & a_{12} + b_{12} & \dots & a_{1n} + b_{1n} \\
                 a_{21} + b_{21} & a_{22} + b_{22} & \dots & a_{2n} + b_{2n} \\
                 \vdots & \vdots &       & \vdots \\
                 a_{m1} + b_{m1} & a_{m2} + b_{m2} & \dots & a_{mn} + b_{mn}
-            \end{bmatrix}
-						$
-        \end{equation*}.
+            \end{bmatrix}.$
     \end{tabular}
 \end{center}
 

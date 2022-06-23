@@ -1,0 +1,22 @@
+\documentclass[11pt]{article}
+\usepackage[serbian]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{indentfirst}
+
+\newcommand{\R}{\mathbb{R}}
+
+\begin{document}
+	\noindent
+	Neka su $ X $ i $ Y $ prostori sa $ \sigma $-kona\v cnom merom i neka je $ f \colon X \times Y \rightarrow \R $ merljiva funkcija takva da je
+
+	\begin{equation*}
+		\int\limits_{X \times Y} |f(x, y)| d(x, y) < \infty.
+	\end{equation*}
+
+	\noindent
+	Tada je
+
+	\begin{equation*}
+		\int\limits_X \left( \int\limits_Y f(x, y) dy \right) dx = \int\limits_Y \left( \int\limits_X f(x, y) dx \right) = \int\limits_{X \times Y} f(x, y) d(x, y)
+	\end{equation*}
+\end{document}
